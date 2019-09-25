@@ -5,11 +5,12 @@ using UnityEngine;
 public class MyCylinder : MonoBehaviour
 {
     public float height;
-    public float radius;
+    public float defaultRadius;
     [Range(1, 100)]
     public int numMeridians = 10;
     [Range(2, 100)]
-    private int numParallels = 2;
+    public int numParallels = 2;
+    public float[] radiuses;
 
     private MeshFilter mf;
     private MeshRenderer mr;
@@ -19,6 +20,11 @@ public class MyCylinder : MonoBehaviour
         mf = gameObject.AddComponent<MeshFilter>();
         mr = gameObject.AddComponent<MeshRenderer>();
         mr.material = new Material(Shader.Find("Standard"));
+        radiuses = new float[numParallels];
+        for (int i = 0; i < radiuses.Length; i++)
+        {
+            radiuses[i] = defaultRadius;
+        }
     }
 
     private void Update()
@@ -34,8 +40,8 @@ public class MyCylinder : MonoBehaviour
             for (int col = 0; col < numMeridians; col++)
             {
                 float theta = col * 2 * Mathf.PI / (float)numMeridians;
-                float x = radius * Mathf.Cos(theta);
-                float z = radius * Mathf.Sin(theta);
+                float x = radiuses[row] * Mathf.Cos(theta);
+                float z = radiuses[row] * Mathf.Sin(theta);
                 float y = height / 2 - row * height / (numParallels - 1);
                 vertices[col + row * numMeridians] = new Vector3(x, y, z);
             }
@@ -44,25 +50,32 @@ public class MyCylinder : MonoBehaviour
         vertices[vertices.Length - 2] = new Vector3(0f, height / 2f, 0f);
         vertices[vertices.Length - 1] = new Vector3(0f, -height / 2f, 0f);
 
-        int[] triangles = new int[numMeridians * 6 + (numMeridians * 3) * 2];
+        int[] triangles = new int[(numParallels - 1) * numMeridians * 6 + (numMeridians * 3) * 2];
         int k = 0;
-        for (int i = 0; i < numMeridians - 1; i++)
+        for (int p = 0; p < numParallels - 1; p++)
         {
-            triangles[k] = i;
-            triangles[k + 1] = numMeridians + i + 1;
-            triangles[k + 2] = numMeridians + i;
-            triangles[k + 3] = i;
-            triangles[k + 4] = i + 1;
-            triangles[k + 5] = numMeridians + i + 1;
+            for (int m = 0; m < numMeridians - 1; m++)
+            {
+                triangles[k] = numMeridians * p + m;
+                triangles[k + 1] = numMeridians * p + numMeridians + m + 1;
+                triangles[k + 2] = numMeridians * p + numMeridians + m;
+                triangles[k + 3] = numMeridians * p + m;
+                triangles[k + 4] = numMeridians * p + m + 1;
+                triangles[k + 5] = numMeridians * p + numMeridians + m + 1;
+                k += 6;
+            }
+        }
+        // Close cylinder
+        for (int p = 0; p < numParallels - 1; p++)
+        {
+            triangles[k] = numMeridians * p + numMeridians - 1;
+            triangles[k + 1] = numMeridians * p + numMeridians;
+            triangles[k + 2] = numMeridians * p + numMeridians * 2 - 1;
+            triangles[k + 3] = numMeridians * p + numMeridians - 1;
+            triangles[k + 4] = numMeridians * p;
+            triangles[k + 5] = numMeridians * p + numMeridians;
             k += 6;
         }
-        triangles[k] = numMeridians - 1;
-        triangles[k + 1] = numMeridians;
-        triangles[k + 2] = numMeridians * 2 - 1;
-        triangles[k + 3] = numMeridians - 1;
-        triangles[k + 4] = 0;
-        triangles[k + 5] = numMeridians;
-        k += 6;
 
         // Close top
         for (int i = 0; i < numMeridians - 1; i++)
@@ -81,13 +94,13 @@ public class MyCylinder : MonoBehaviour
         for (int i = 0; i < numMeridians - 1; i++)
         {
             triangles[k] = vertices.Length - 1;
-            triangles[k + 1] = numMeridians + i;
-            triangles[k + 2] = numMeridians + i + 1;
+            triangles[k + 1] = (numParallels - 1) * numMeridians + i;
+            triangles[k + 2] = (numParallels - 1) * numMeridians + i + 1;
             k += 3;
         }
         triangles[k] = vertices.Length - 1;
-        triangles[k + 1] = numMeridians * 2 - 1;
-        triangles[k + 2] = numMeridians;
+        triangles[k + 1] = (numParallels - 1) * numMeridians + numMeridians - 1;
+        triangles[k + 2] = (numParallels - 1) * numMeridians;
         k += 3;
 
         Mesh mesh = new Mesh();
@@ -97,40 +110,4 @@ public class MyCylinder : MonoBehaviour
         mesh.RecalculateNormals();
         return mesh;
     }
-
-    /*Mesh CreateCircleMesh()
-    {
-        int numVertex = detailLevel + 1;
-        Vector3[] vertices = new Vector3[numVertex];
-        float angleStep = 2 * Mathf.PI / detailLevel;
-
-        // Construct Vertices
-        vertices[0] = transform.position;
-        for (int i = 1; i < numVertex; i++)
-        {
-            float theta = -(i - 1) * angleStep;
-            vertices[i] = vertices[0] + new Vector3(radius * Mathf.Cos(theta), 0, radius * Mathf.Sin(theta));
-        }
-
-        // Construct triangle
-        int numTriangle = detailLevel;
-        int[] triangles = new int[numTriangle * 3];
-        int k = 0;
-        for (int i = 0; i < numTriangle - 1; i++)
-        {
-            triangles[k] = 0;
-            triangles[k + 1] = i + 1;
-            triangles[k + 2] = i + 2;
-            k += 3;
-        }
-        triangles[k] = 0;
-        triangles[k + 1] = numTriangle;
-        triangles[k + 2] = 1;
-
-        Mesh mesh = new Mesh();
-        mesh.name = "my-cylinder";
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        return mesh;
-    }*/
 }
