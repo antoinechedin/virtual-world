@@ -240,9 +240,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 310bfa9cc8e555843889d2e293569910, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 5
-  radius: 2
-  numMeridians: 4
+  height: 10
+  defaultRadius: 3
+  numMeridians: 10
+  numParallels: 5
+  radiuses: []
 --- !u!4 &724910183
 Transform:
   m_ObjectHideFlags: 0
