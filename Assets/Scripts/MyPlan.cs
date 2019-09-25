@@ -37,7 +37,7 @@ public class MyPlan : MonoBehaviour
         {
             for (int col = 0; col < detailLevel + 1; col++)
             {
-                Vector3 vertex = new Vector3(col * widthStep, row * heightStep, .0f);
+                Vector3 vertex = new Vector3(col * widthStep - width / 2f, row * heightStep - height / 2f, .0f);
                 verticesMatrix[row, col] = vertex;
                 vertices[i] = vertex;
                 i++;
