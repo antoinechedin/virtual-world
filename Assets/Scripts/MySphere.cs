@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MyCylinder : MonoBehaviour
+public class MySphere : MonoBehaviour
 {
-    public float height;
-    public float defaultRadius;
+    public float radius;
     [Range(1, 100)]
     public int numMeridians = 10;
     [Range(2, 100)]
     public int numParallels = 2;
-    public float[] radiuses;
 
     private MeshFilter mf;
     private MeshRenderer mr;
@@ -34,18 +32,18 @@ public class MyCylinder : MonoBehaviour
         {
             for (int col = 0; col < numMeridians; col++)
             {
-                float radiusAtRow = row < radiuses.Length ? radiuses[row] : defaultRadius;
+                float y = radius - 2 * radius * row / (numParallels - 1);
 
+                float radiusAtRow = Mathf.Sqrt(radius * radius - (y * y));
                 float theta = col * 2 * Mathf.PI / (float)numMeridians;
                 float x = radiusAtRow * Mathf.Cos(theta);
                 float z = radiusAtRow * Mathf.Sin(theta);
-                float y = height / 2 - row * height / (numParallels - 1);
                 vertices[col + row * numMeridians] = new Vector3(x, y, z);
             }
         }
 
-        vertices[vertices.Length - 2] = new Vector3(0f, height / 2f, 0f);
-        vertices[vertices.Length - 1] = new Vector3(0f, -height / 2f, 0f);
+        vertices[vertices.Length - 2] = new Vector3(0f, radius / 2f, 0f);
+        vertices[vertices.Length - 1] = new Vector3(0f, -radius / 2f, 0f);
 
         int[] triangles = new int[(numParallels - 1) * numMeridians * 6 + (numMeridians * 3) * 2];
         int k = 0;
