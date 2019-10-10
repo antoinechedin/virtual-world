@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5772607715993442389}
   - component: {fileID: 1925689600345000828}
   - component: {fileID: 1401831308034607470}
+  - component: {fileID: 898434602654678525}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -78,3 +79,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &898434602654678525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9191505129794684363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89b6964c5938a4d44aceb217d35ea690, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exist: 0

@@ -2,15 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CubeBox 
+public class CubeBox : MonoBehaviour
 {
-    public Vector3 center;
-    public float size;
-    public bool enable;
-
-    public CubeBox(Vector3 center, float size, bool enable){
-        this.center = center;
-        this.size = size;
-        this.enable = enable;
-    }
+    [HideInInspector] public float value;
+    [HideInInspector] public bool exist;
 }
