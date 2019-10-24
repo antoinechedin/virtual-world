@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
+[RequireComponent(typeof(MeshRenderer), typeof(MeshFilter))]
 public class OFFLoader : MonoBehaviour
 {
     MeshRenderer meshRenderer;
@@ -11,11 +12,11 @@ public class OFFLoader : MonoBehaviour
 
     public TextAsset offFile;
 
-    private void Start()
+    private void Awake()
     {
-        meshRenderer = gameObject.AddComponent<MeshRenderer>();
+        meshRenderer = GetComponent<MeshRenderer>();
         meshRenderer.material = new Material(Shader.Find("Standard"));
-        meshFilter = gameObject.AddComponent<MeshFilter>();
+        meshFilter = GetComponent<MeshFilter>();
 
         meshFilter.mesh = LoadMeshFromFile(offFile);
     }
@@ -29,7 +30,7 @@ public class OFFLoader : MonoBehaviour
         int numFacet = int.Parse(meshInfos[1]);
         int numEdge = int.Parse(meshInfos[2]);
 
-        Debug.Log("Loading mesh with: [" + numVertex + ", " + numFacet + ", " + numEdge + "]");
+        //Debug.Log("Loading mesh with: [" + numVertex + ", " + numFacet + ", " + numEdge + "]");
 
         Vector3[] vertices = new Vector3[numVertex];
         for (int i = 0; i < numVertex; i++)
@@ -51,7 +52,7 @@ public class OFFLoader : MonoBehaviour
             triangles[i * 3 + 2] = int.Parse(triangleInfo[3]);
         }
 
-        Debug.Log("Mesh loaded");
+        //Debug.Log("Mesh loaded");
 
         Mesh mesh = new Mesh();
         mesh.name = offFile.name;
